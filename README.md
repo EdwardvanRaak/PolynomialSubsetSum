@@ -1,7 +1,7 @@
 Subset Sum Problem, Polynomial Algorithm
 ===================
 
-In this repo you'll find the fruits of an on-going effort to implement a polynomial-time algorithm to solve the subset sum problem.  I haven't put any effort into formal proofs yet; however, the algorithm has held its own against its exponential counterpart from n = 1 to 20, 10,000,000 trials each with a 100% success rate, and I've also reduced and solved quite a few 3-SAT problems using this implementation of the algorithm.
+In this repo you'll find the fruits of an on-going effort to implement a polynomial-time algorithm to solve the subset sum problem.  
 
 About this project:
 The current big-O runtime is O(n^8).
