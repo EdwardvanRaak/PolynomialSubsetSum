@@ -9,6 +9,6 @@ The current big-O runtime is O(n^5); however, I'm applying an alternative to a m
 
 If you use the code or the algorithm, great!  Some credit will be nice.  If you break it, even better!  Contact me to let me know how you did it.  (Note: worst case at n = 200 is 200^5 (neglecting lower-order terms and constants), so if it feels like it's hanging for a large input, it's probably not: it's just your computer attempting to execute some multiple of 200^5 operations.)
 
-Coming soon: Improvements, coherent comments and explanations, and fixes when/if people break it.
+Coming soon: Improvements (will transition to BigDecimal rather than double for greater range in inputs), coherent comments and explanations, and fixes when/if people break it.
 
 Questions?  Comments?  Suggestions?  Feel free to email me (aubrey.alston.1@gmail.com).
