@@ -55,17 +55,7 @@ public class SubsetSum {
 		//       length-four subsets of the original set.  Begin each iteration
 		//       by swapping those subsets into the first four positions of the
 		//       set (the window positions).  This method takes the total complexity
-		//       of the algorithm to O(n^8); however, its function is guaranteed.
-		//       (This is not the implemented solution; however, code for it will
-		//        appears in block comments.)
-		//    2. Introduce another set of iterations for a proper number of 'four-spacings'
-		//       of the set.  Four-spacing works by, where possible, moving the i+4th element
-		//       to be directly adjacent to the ith element.  Only the number of re-spacings
-		//       required to move the last element within the window width of the original
-		//       first before it is known that a choice cannot be made (hypothesis)
-		//       (implemented solution; performs as accurately as 1 in a fraction of
-		//        the time).  This method takes the total complexity of the algorithm
-		//       to n^5 (technically log base 4 n * n^4).
+		//       of the algorithm to O(n^8).
 		
 		// Copy the set for easy readjustments
 		double[] static_set = new double[set.length];
@@ -76,10 +66,10 @@ public class SubsetSum {
 		// be at least 4 elements long.  Introduce base cases for sets less than four in length.
 		double setSum = 0;
 		
-		/* n^8 IMPLEMENTATION: Finding pairs
-		 * double[][] pairs = new double[set.length*(set.length-1)/2][2];
-		 * int pairCursor = 0;
-		 */
+		/* n^8 IMPLEMENTATION: Finding pairs */
+		 double[][] pairs = new double[set.length*(set.length-1)/2][2];
+		 int pairCursor = 0;
+		 
 		
 		// Check for the sum among prefix subset of elements of the set.
 		for(int i = 0; i < set.length; i++){
@@ -112,9 +102,8 @@ public class SubsetSum {
 		// Check for length-2 subsets summing to the sought value.
 		for(int i = 0; i < set.length; i++){
 			for(int j = i+1; j < set.length; j++){
-				/* n^8 IMPLEMENTATION: Populate pairs 
-				 * pairs[pairCursor++] = new double[]{ set[i], set[j] };
-				 */
+				 pairs[pairCursor++] = new double[]{ set[i], set[j] };
+				 
 				if(dblEq(set[i]+set[j], sum)){
 					subset.add(set[i]);
 					subset.add(set[j]);
@@ -123,57 +112,50 @@ public class SubsetSum {
 			}
 		}
 		
-		/* n^8 IMPLEMENTATION: Populate quads
-		 * double[][] quads = new double[pairs.length*pairs.length][4];
-		 * int quadCursor = 0;
-		 * 
-		 * for(int i = 0; i < pairs.length; i++){
-		 *     for(int j = i + 1; j < pairs.length; j++){
-		 *     		//Only use pairs of pairs not containing common elements.
-		 *          if(pairs[i][0] != pairs[j][0] && pairs[i][0] != pairs[j][1] && 
-		 *              pairs[i][1] != pairs[j][0] && pairs[i][1] != pairs[j][1])
-		 *              	quads[quadCursor++] = new double[]
-		 *                     { pairs[i][0], pairs[i][1], pairs[j][0], pairs[j][1] };  
-		 *     }
-		 * }
-		 */
+	    double[][] quads = new double[pairs.length*pairs.length][4];
+		int quadCursor = 0;
+		   
+		for(int i = 0; i < pairs.length; i++){
+		    for(int j = i + 1; j < pairs.length; j++){
+		        //Only use pairs of pairs not containing common elements.
+		        if(pairs[i][0] != pairs[j][0] && pairs[i][0] != pairs[j][1] && 
+		            pairs[i][1] != pairs[j][0] && pairs[i][1] != pairs[j][1])
+		               quads[quadCursor++] = new double[]
+		                { pairs[i][0], pairs[i][1], pairs[j][0], pairs[j][1] };  
+		       }
+		}
+		 
 		
 		double[][] system;
 		
-		/* n^8 IMPLEMENTATION: Outermost iteration; replace first for loop with the following
-		 * for(int i = 0; i < quadCursor; i++){
-		 * 		int qA = -1, qB = -1, qC = -1, qD = -1;
-		 *      for(int j = 0; j < set.length; j++){
-		 *          if(set[j] == quads[i][0])
-		 *              qA = i;
-		 *          if(set[j] == quads[i][1])
-		 *              qB = i;
-		 *          if(set[j] == quads[i][2])
-		 *              qC = i;
-		 *          if(set[j] == quads[i][3])
-		 *              qD = i;
-		 *          if(qA != -1 && qB != -1 && qC != -1 && qD != -1)  break;
-		 *      } 
-		 *      
-		 *      // Swap elements into the window
-		 *      double t = set[qA];
-		 *      set[qA] = set[0];
-		 *      set[0] = t;
-		 *      t = set[qB];
-		 *      set[qB] = set[1];
-		 *      set[1] = t;
-		 *      t = set[qC];
-		 *      set[qC] = set[2];
-		 *      set[2] = t;
-		 *      t = set[qD];
-		 *      set[qD] = set[3];
-		 *      set[3] = t;
-		 */
-		
-		// Calculate maximum number of re-spacing operations on the set.
-		// (log base 4 of the set length + 1)
-		int numRespaces = (int) (Math.log(set.length) / Math.log(4)) + 1;
-		for(int i = 0; i <= numRespaces ; i++){
+		for(int i = 0; i < quadCursor; i++){
+			int qA = -1, qB = -1, qC = -1, qD = -1;
+			for(int j = 0; j < set.length; j++){
+	           if(set[j] == quads[i][0])
+	               qA = j;
+	           if(set[j] == quads[i][1])
+	               qB = j;
+	           if(set[j] == quads[i][2])
+	               qC = j;
+	           if(set[j] == quads[i][3])
+	               qD = j;
+	           if(qA != -1 && qB != -1 && qC != -1 && qD != -1)  break;
+	       } 
+	       
+	       // Swap elements into the window
+	       
+	       double t = set[qA];
+	       set[qA] = set[0];
+	       set[0] = t;
+	       t = set[qB];
+	       set[qB] = set[1];
+	       set[1] = t;
+	       t = set[qC];
+	       set[qC] = set[2];
+	       set[2] = t;
+	       t = set[qD];
+	       set[qD] = set[3];
+	       set[3] = t;
 			// Shift the window such that each element of the set reaches the window once.
 			for(int shifts = 0; shifts < set.length; shifts++){ 
 				// This block tests the set against subset sum constraints
@@ -219,20 +201,7 @@ public class SubsetSum {
 				// Shift the window to contain the next element to the right.
 				shift(set);
 			}
-			// Apply set space readjustment.
-			respaceSet(set); 
 			
-			// Check to see if the readjustment takes the set back to its original 
-			// state.  If it does, break early.
-			boolean eq = true;
-			for(int j = 0; j < set.length; j++){
-				if(set[j] != static_set[j]){
-					eq = false;
-					break;
-				}
-			}
-			if(eq)
-				break;
 		}
 		return subset;
 	}
@@ -249,61 +218,6 @@ public class SubsetSum {
 		set[set.length-1] = t;
 	}
 	
-	/**
-	 * Applies spacing to the elements of the set such that, after the method call,
-	 * every element of the set is adjacent to an element that was four positions away
-	 * before the method call (four-spacing).
-	 * @param set to readjust
-	 */
-	public static void respaceSet(double[] set){
-		if(set.length < 4) return;
-		
-		Queue<Double[]> adjList = new LinkedList<Double[]>();
-		HashMap<Double, Double[]> adjMap = new HashMap<Double, Double[]>();
-		
-		// Populate the pairs of items 4 positions away.
-		for(int i = 0; i < set.length-4; i++){
-			Double[] pair = new Double[]{ set[i], set[i+4] };
-			adjMap.put(set[i], pair);
-			adjList.offer(pair);
-		}
-		
-		// Catch the ones that had no mates.
-		for(int i = set.length-4; i < set.length; i++){
-			Double[] pair = new Double[]{ set[i], set[i] };
-			adjList.offer(pair);
-		}
-		
-		// Base cases for sets having less than 8 elements.
-		double[] sav = new double[0];
-		if(set.length < 8){
-			if(set.length == 5)  sav = new double[]{ set[1], set[2], set[3] };
-			if(set.length == 6)  sav = new double[]{ set[2], set[3] };
-			if(set.length == 7)  sav = new double[]{ set[3] };
-		}
-		int index = 0;
-		
-		// Re-order the set based off of the adjacency pairs found.
-		while(!adjList.isEmpty()){
-			Double[] pair = adjList.poll();
-			if(!adjMap.containsKey(pair[0]))
-				continue;
-			set[index++] = pair[0];
-			if(pair[0] != pair[1])
-				set[index++] = pair[1];
-			while(adjMap.containsKey(pair[1])){
-				double r = pair[1];
-				pair = adjMap.get(pair[1]);
-				adjMap.remove(r);
-				set[index++] = pair[1];
-			}
-			if(adjMap.containsKey(pair[0]))
-				adjMap.remove(pair[0]);
-		}
-		for(int i = 0; i < sav.length; i++){
-			set[set.length-1-sav.length+i] = sav[i];
-		}
-	}
 	
 	/**
 	 * Initializes the underdetermined subset sum solving system for a 
