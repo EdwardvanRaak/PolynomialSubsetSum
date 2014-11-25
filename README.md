@@ -10,6 +10,6 @@ If you use the code or the algorithm, great!  Some credit will be nice.  If you 
 
 Coming soon: Improvements (will transition to BigDecimal rather than double for greater range in inputs), coherent comments and explanations, fixes when/if people break it, and a proof of the method.
 
-UPDATE: 11/25: the experimental method I used to reduce runtime to O(n^5) turned out to be a fluke, causing false negatives.  Reverted back to the old, slow O(n^8) algorithm; false negatives are no longer present.
+UPDATE: 11/25: the experimental method I used to reduce runtime to O(n^5) turned out to be a fluke, causing false negatives.  Reverted back to the old, slow O(n^8) algorithm; false negatives no lonoger seem to appear.
 
 Questions?  Comments?  Suggestions?  Feel free to email me (aubrey.alston.1@gmail.com).
