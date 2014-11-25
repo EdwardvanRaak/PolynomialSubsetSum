@@ -1,7 +1,6 @@
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * Implementation of a polynomial-time algorithm solving instances of the
@@ -158,45 +157,48 @@ public class SubsetSum {
 	       set[3] = t;
 			// Shift the window such that each element of the set reaches the window once.
 			for(int shifts = 0; shifts < set.length; shifts++){ 
-				// This block tests the set against subset sum constraints
-				// for the current window for subsets of length 3 . . . set.length-2.
-				// Total complexity for this block: n^3.
-				
-				// Initialize the subset system configured for the current set
-				// ordering and the sought sum.
-				system = initSubsetSystem(set, sum);
-				for(int n = 3; n <= set.length - 2; n++){ 
-					// Because the system is underdetermined (4 rows),
-					// Matrix operations here are of the order 4n and 4n^2.
-					// Unless I'm mistaken, this block is n^2.
+				for( int wShifts = 0; wShifts < 4; wShifts++){
+					// This block tests the set against subset sum constraints
+					// for the current window for subsets of length 3 . . . set.length-2.
+					// Total complexity for this block: n^3.
 					
-					// Adjust the sought subset length.
-					setAssumedSubsetLength(system, n);
-					
-					// Within the four-item window (first four items of the set)
-					// there are four elements:
-					// | a1 a2 a3 a4 | . . . . .
-					// a1 and a2 are the balancing points for analyzing the solution space;
-					// a3 and a4 are the pivots used to make membership choices of the set.
-					
-					// Test against the assumption that both pivots are in the subset.
-					testSystem(system, subset, 1, 1, sum, n);
-					if(subset.size() > 0) return subset;
-					
-					// Test against the assumption that the second but not the first element
-					// is in the subset.
-					testSystem(system, subset, 0, 1, sum, n);
-					if(subset.size() > 0) return subset;
-					
-					// Test against the assumption that the first but not the second element is
-					// in the subset.
-					testSystem(system, subset, 1, 0, sum, n);
-					if(subset.size() > 0) return subset;
-					
-					// Test against the assumption that neither the second nor the first element
-					// is in the subset.
-					testSystem(system, subset, 0, 0, sum, n);
-					if(subset.size() > 0) return subset;		
+					// Initialize the subset system configured for the current set
+					// ordering and the sought sum.
+					system = initSubsetSystem(set, sum);
+					for(int n = 3; n <= set.length - 2; n++){ 
+						// Because the system is underdetermined (4 rows),
+						// Matrix operations here are of the order 4n and 4n^2.
+						// Unless I'm mistaken, this block is n^2.
+						
+						// Adjust the sought subset length.
+						setAssumedSubsetLength(system, n);
+						
+						// Within the four-item window (first four items of the set)
+						// there are four elements:
+						// | a1 a2 a3 a4 | . . . . .
+						// a1 and a2 are the balancing points for analyzing the solution space;
+						// a3 and a4 are the pivots used to make membership choices of the set.
+						
+						// Test against the assumption that both pivots are in the subset.
+						testSystem(system, subset, 1, 1, sum, n);
+						if(subset.size() > 0) return subset;
+						
+						// Test against the assumption that the second but not the first element
+						// is in the subset.
+						testSystem(system, subset, 0, 1, sum, n);
+						if(subset.size() > 0) return subset;
+						
+						// Test against the assumption that the first but not the second element is
+						// in the subset.
+						testSystem(system, subset, 1, 0, sum, n);
+						if(subset.size() > 0) return subset;
+						
+						// Test against the assumption that neither the second nor the first element
+						// is in the subset.
+						testSystem(system, subset, 0, 0, sum, n);
+						if(subset.size() > 0) return subset;		
+					}
+					shiftWindow(set);
 				}
 				// Shift the window to contain the next element to the right.
 				shift(set);
@@ -216,6 +218,18 @@ public class SubsetSum {
 			set[i-1] = set[i];
 		}
 		set[set.length-1] = t;
+	}
+	
+	/**
+	 * Shifts the window by shifting the elements of the set, wrapping the first element
+	 * around to be the last.
+	 */
+	public static void shiftWindow(double[] set){
+		double t = set[0];
+		for(int i = 1; i < 4; i++){
+			set[i-1] = set[i];
+		}
+		set[3] = t;
 	}
 	
 	
@@ -510,8 +524,7 @@ public class SubsetSum {
 					break;
 				}
 			}
-			if(minEq.size() >= n-nMod-sumA-sumB){ // HERE.  YOU'RE NOT ACCOUNTING FOR SUMA
-				                        // AND/OR SUMB BEING 1 <---!!!!
+			if(minEq.size() >= n-nMod-sumA-sumB){ 
 				break;
 			}
 		}
@@ -530,8 +543,94 @@ public class SubsetSum {
 				return true;
 			}
 		}
+		valid.clear();
+
+		// At times, it's possible for there to be choices within the null space.
+		HashSet<Integer> seenAsChoice = new HashSet<Integer>();
+		for(int i = 0; i < work[0].length-1; i++){
+			// pass; make binary decisions
+			if(seenAsChoice.contains(i) || work[2][i] == -1) continue;
+			LinkedList<Integer> choices = new LinkedList<Integer>();
+			for(int j = 0; j < work[0].length-1; j++){
+				if(i == j) continue;
+				double dA = work[0][j] - work[0][i];
+				double dB = work[1][j] - work[1][i];
+				if(dblEq(dA, dB)){
+					choices.add(j);
+				}
+			}
+			// choose the first choice 
+			if(choices.size() == 1){
+				valid.add(i);
+				
+				work[2][i] = -1;
+				work[2][choices.get(0)] = -1;
+				work[0][choices.get(0)] = 0;
+				work[1][choices.get(0)] = 0;
+				for(int j = 0; j < work[0].length-1; j++){
+					if(work[2][j] == -1) continue;
+					work[0][j] /= 1 - work[0][i];
+					work[1][j] /= 1 - work[1][i];
+					if(work[2][j] != -1)
+						work[2][j] = work[0][j] - work[1][j];
+				}
+			} else{
+				seenAsChoice.addAll(choices);
+				seenAsChoice.add(i);
+			}
+			
+		}
+
+		// now remaining elements of the subset are determined
+		int nRemaining = n - nMod - sumA - sumB - valid.size();
+		LinkedList<Integer> eqDiff = new LinkedList<Integer>();
+		if(nRemaining > 1){
+			for(int i = 0; i < work[0].length - 1; i++){
+				eqDiff.clear();
+				eqDiff.add(i);
+				if(work[2][i] == -1) continue;
+				for(int j = i+1; j < work[0].length - 1; j++){
+					// Need more precision: BigDecimal implementation becoming necessary
+					if(dblEq(1000*work[2][i], 1000*work[2][j])){
+						eqDiff.add(j);
+						if(eqDiff.size() == nRemaining) break;
+					}
+				}
+				if(eqDiff.size() == nRemaining){
+					valid.addAll(eqDiff);
+					break;
+				}
+			}
+		} else{
+			for(int i = 0; i < work[0].length - 1; i++){
+				if(dblEq(work[0][i],1) && dblEq(work[1][i],1)){
+					valid.add(i);
+				}
+			}
+		}
 		
-		return false;
+		for(Integer index : valid){
+			for(int j = 0; j < particular_solution.length; j++){
+				possible_solution[j][0] += null_space[j][index];
+			}
+		}
+		
+		boolean valid_solution = true;
+		// test the solution 
+		for(int k = 0; k < possible_solution.length; k++){
+			if(!dblEq(possible_solution[k][0],1) &&
+					!dblEq(possible_solution[k][0],0)){
+				valid_solution = false;
+				break;
+			}
+		}
+		if(valid_solution){
+			for(int j = 0; j < particular_solution.length; j++){
+				particular_solution[j][0] = possible_solution[j][0];
+			}
+		}
+		
+		return valid_solution;
 	}
 	
 	/**
