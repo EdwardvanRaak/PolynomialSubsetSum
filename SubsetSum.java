@@ -154,54 +154,51 @@ public class SubsetSum {
 	       set[2] = t;
 	       t = set[qD];
 	       set[qD] = set[3];
-	       set[3] = t;
-			// Shift the window such that each element of the set reaches the window once.
-			for(int shifts = 0; shifts < set.length; shifts++){ 
-				for( int wShifts = 0; wShifts < 4; wShifts++){
-					// This block tests the set against subset sum constraints
-					// for the current window for subsets of length 3 . . . set.length-2.
-					// Total complexity for this block: n^3.
+	       set[3] = t; 
+		   for( int wShifts = 0; wShifts < 2; wShifts++){ // Shift the window once
+			                                              // to ensure each pair
+			                                              // appears once as balance/pivot.
+				// This block tests the set against subset sum constraints
+				// for the current window for subsets of length 3 . . . set.length-2.
+				// Total complexity for this block: n^3.
+				
+				// Initialize the subset system configured for the current set
+				// ordering and the sought sum.
+				system = initSubsetSystem(set, sum); 
+				for(int n = 3; n <= set.length - 2; n++){ 
+					// Because the system is underdetermined (4 rows),
+					// Matrix operations here are of the order 4n and 4n^2.
+					// Unless I'm mistaken, this block is n^2.
 					
-					// Initialize the subset system configured for the current set
-					// ordering and the sought sum.
-					system = initSubsetSystem(set, sum);
-					for(int n = 3; n <= set.length - 2; n++){ 
-						// Because the system is underdetermined (4 rows),
-						// Matrix operations here are of the order 4n and 4n^2.
-						// Unless I'm mistaken, this block is n^2.
-						
-						// Adjust the sought subset length.
-						setAssumedSubsetLength(system, n);
-						
-						// Within the four-item window (first four items of the set)
-						// there are four elements:
-						// | a1 a2 a3 a4 | . . . . .
-						// a1 and a2 are the balancing points for analyzing the solution space;
-						// a3 and a4 are the pivots used to make membership choices of the set.
-						
-						// Test against the assumption that both pivots are in the subset.
-						testSystem(system, subset, 1, 1, sum, n);
-						if(subset.size() > 0) return subset;
-						
-						// Test against the assumption that the second but not the first element
-						// is in the subset.
-						testSystem(system, subset, 0, 1, sum, n);
-						if(subset.size() > 0) return subset;
-						
-						// Test against the assumption that the first but not the second element is
-						// in the subset.
-						testSystem(system, subset, 1, 0, sum, n);
-						if(subset.size() > 0) return subset;
-						
-						// Test against the assumption that neither the second nor the first element
-						// is in the subset.
-						testSystem(system, subset, 0, 0, sum, n);
-						if(subset.size() > 0) return subset;		
-					}
-					shiftWindow(set);
+					// Adjust the sought subset length.
+					setAssumedSubsetLength(system, n);
+					
+					// Within the four-item window (first four items of the set)
+					// there are four elements:
+					// | a1 a2 a3 a4 | . . . . .
+					// a1 and a2 are the balancing points for analyzing the solution space;
+					// a3 and a4 are the pivots used to make membership choices of the set.
+					
+					// Test against the assumption that both pivots are in the subset.
+					testSystem(system, subset, 1, 1, sum, n);
+					if(subset.size() > 0) return subset;
+					
+					// Test against the assumption that the second but not the first element
+					// is in the subset.
+					testSystem(system, subset, 0, 1, sum, n);
+					if(subset.size() > 0) return subset;
+					
+					// Test against the assumption that the first but not the second element is
+					// in the subset.
+					testSystem(system, subset, 1, 0, sum, n);
+					if(subset.size() > 0) return subset;
+					
+					// Test against the assumption that neither the second nor the first element
+					// is in the subset.
+					testSystem(system, subset, 0, 0, sum, n);
+					if(subset.size() > 0) return subset;		
 				}
-				// Shift the window to contain the next element to the right.
-				shift(set);
+				shiftWindow(set);
 			}
 			
 		}

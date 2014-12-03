@@ -87,7 +87,6 @@ public class LinearSystems {
 		return solutions;
 	}
 	
-	// puts a system in rref
 	public static double[][] eliminate(double[][] a){
 		double[][] work = new double[a.length][a[0].length];
 		
