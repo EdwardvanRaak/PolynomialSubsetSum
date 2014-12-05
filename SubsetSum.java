@@ -65,7 +65,7 @@ public class SubsetSum {
 		// be at least 4 elements long.  Introduce base cases for sets less than four in length.
 		double setSum = 0;
 		
-		/* n^8 IMPLEMENTATION: Finding pairs */
+		/* Finding pairs */
 		 double[][] pairs = new double[set.length*(set.length-1)/2][2];
 		 int pairCursor = 0;
 		 
@@ -200,7 +200,6 @@ public class SubsetSum {
 				}
 				shiftWindow(set);
 			}
-			
 		}
 		return subset;
 	}
@@ -541,9 +540,9 @@ public class SubsetSum {
 			}
 		}
 		valid.clear();
-
+		
 		// At times, it's possible for there to be choices within the null space.
-		HashSet<Integer> seenAsChoice = new HashSet<Integer>();
+		/*HashSet<Integer> seenAsChoice = new HashSet<Integer>();
 		for(int i = 0; i < work[0].length-1; i++){
 			// pass; make binary decisions
 			if(seenAsChoice.contains(i) || work[2][i] == -1) continue;
@@ -577,9 +576,10 @@ public class SubsetSum {
 			}
 			
 		}
-
+		
 		// now remaining elements of the subset are determined
 		int nRemaining = n - nMod - sumA - sumB - valid.size();
+
 		LinkedList<Integer> eqDiff = new LinkedList<Integer>();
 		if(nRemaining > 1){
 			for(int i = 0; i < work[0].length - 1; i++){
@@ -625,9 +625,10 @@ public class SubsetSum {
 			for(int j = 0; j < particular_solution.length; j++){
 				particular_solution[j][0] = possible_solution[j][0];
 			}
-		}
+			System.out.println("lol");
+		}*/
 		
-		return valid_solution;
+		return false;//valid_solution;
 	}
 	
 	/**
