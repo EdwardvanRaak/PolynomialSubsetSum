@@ -14,7 +14,7 @@ public class RefactoredSubsetSum {
 		for(int i = 0; i < set.length; i++){
 			int max = i;
 			for(int j = i+1; j < set.length; j++){
-				if(Math.abs(set[j]) < Math.abs(set[max]))
+				if(Math.abs(set[j]) > Math.abs(set[max]))
 					max = j;
 			}
 			long t = set[i];
@@ -94,7 +94,7 @@ public class RefactoredSubsetSum {
 	               qD = j;
 	           if(qA != -1 && qB != -1 && qC != -1 && qD != -1)  break;
 	       } 
-	       
+	       if(qA == -1 || qB == -1 || qC == -1) continue;
 	       // Swap elements into the window
 	       
 	       long t = set[qA];
@@ -203,7 +203,7 @@ public class RefactoredSubsetSum {
 			long dir1 = (set[1] - set[i])*d2*sgn_d1;
 			long dir2 = (set[i] - set[0])*d1*sgn_d2;
 			long dir3 = Math.abs(dir1 - dir2);
-			if(dir1 >= d1d2 || dir1 < 0 || dir2 >= d1d2 || dir2 < 0)
+			if(dir1 < 0 || dir2 >= d1d2 || dir2 < 0)
 				continue;
 			if(dir3 < d1d2 && dir3 > 0){
 				valid.add(i);
