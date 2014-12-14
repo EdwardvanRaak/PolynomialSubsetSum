@@ -35,6 +35,34 @@ public class RefactoredSubsetSum {
 		subset = partialSubsetSum(set, sum);
 		if(subset.size() > 0) return subset;
 		
+		// Ascending absolute value
+		for(int i = 0; i < set.length; i++){
+			int min = i;
+			for(int j = i+1; j < set.length; j++){
+				if(Math.abs(set[j]) < Math.abs(set[min]))
+					min = j;
+			}
+			long t = set[i];
+			set[i] = set[min];
+			set[min] = t;
+		}
+		subset = partialSubsetSum(set, sum);
+		if(subset.size() > 0) return subset;
+		
+		// Ascending absolute signed value
+		for(int i = 0; i < set.length; i++){
+			int min = i;
+			for(int j = i+1; j < set.length; j++){
+				if(set[j] < set[min])
+					min = j;
+			}
+			long t = set[i];
+			set[i] = set[min];
+			set[min] = t;
+		}
+		subset = partialSubsetSum(set, sum);
+		if(subset.size() > 0) return subset;
+		
 		return subset;
 	}
 	
