@@ -7,10 +7,7 @@ public class RefactoredSubsetSum {
 	}
 	
 	public static LinkedList<Long> subsetSum(long[] set, long sum){
-		LinkedList<Long> subset = new LinkedList<Long>();
-	
-		long setSum = 0;
-
+		// Descending absolute value
 		for(int i = 0; i < set.length; i++){
 			int max = i;
 			for(int j = i+1; j < set.length; j++){
@@ -21,6 +18,33 @@ public class RefactoredSubsetSum {
 			set[i] = set[max];
 			set[max] = t;
 		}
+		LinkedList<Long> subset = partialSubsetSum(set, sum);
+		if(subset.size() > 0) return subset;
+		
+		// Descending scalar value
+		for(int i = 0; i < set.length; i++){
+			int max = i;
+			for(int j = i+1; j < set.length; j++){
+				if(set[j] > set[max])
+					max = j;
+			}
+			long t = set[i];
+			set[i] = set[max];
+			set[max] = t;
+		}
+		subset = partialSubsetSum(set, sum);
+		if(subset.size() > 0) return subset;
+		
+		return subset;
+	}
+	
+	public static LinkedList<Long> partialSubsetSum(long[] set, long sum){
+		LinkedList<Long> subset = new LinkedList<Long>();
+	
+		long setSum = 0;
+
+		// in-place window swap?
+		// desc, asc, stripe desc, stripe asc		
 		
 		/* Finding pairs */
 		long[][] pairs = new long[set.length*(set.length-1)/2][2];
@@ -203,8 +227,8 @@ public class RefactoredSubsetSum {
 			long dir1 = (set[1] - set[i])*d2*sgn_d1;
 			long dir2 = (set[i] - set[0])*d1*sgn_d2;
 			long dir3 = Math.abs(dir1 - dir2);
-			if(dir1 < 0 || dir2 >= d1d2 || dir2 < 0)
-				continue;
+			//if(dir1 < 0 || dir2 >= d1d2 || dir2 < 0)
+				//continue;
 			if(dir3 < d1d2 && dir3 > 0){
 				valid.add(i);
 				s1 += dir1;
