@@ -1,4 +1,4 @@
-Subset Sum Problem, Polynomial Algorithm
+Subset Sum Problem, Strongly Polynomial Algorithm
 ===================
 
 In this repo you'll find the fruits of an on-going effort to implement a polynomial-time algorithm to solve the subset sum problem.  
