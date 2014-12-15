@@ -7,6 +7,28 @@ public class RefactoredSubsetSum {
 	}
 	
 	public static LinkedList<Long> subsetSum(long[] set, long sum){
+		
+		LinkedList<Long> subset = null;
+		
+		// Broken ordering
+		for(int i = 0; i < set.length; i++){
+			int min = i;
+			for(int j = i+1; j < set.length; j++){
+				if(set[j] < set[min])
+					min = j;
+			}
+			long t = set[i];
+			set[i] = set[min];
+			set[min] = t;
+		}
+		for(int i = 0; i < set.length/2; i+=2){
+			long t = set[i];
+			set[i] = set[set.length - 1 - i];
+			set[set.length - 1 - i] = t;
+		}
+		subset = partialSubsetSum(set, sum);
+		if(subset.size() > 0) return subset;
+		
 		// Descending absolute value
 		for(int i = 0; i < set.length; i++){
 			int max = i;
@@ -18,7 +40,7 @@ public class RefactoredSubsetSum {
 			set[i] = set[max];
 			set[max] = t;
 		}
-		LinkedList<Long> subset = partialSubsetSum(set, sum);
+		subset = partialSubsetSum(set, sum);
 		if(subset.size() > 0) return subset;
 		
 		// Descending scalar value
@@ -113,6 +135,7 @@ public class RefactoredSubsetSum {
 						 set[j] };
 				 
 				if(set[i] + set[j] == sum){
+					
 					subset.add(set[i]);
 					subset.add(set[j]);
 					return subset;
@@ -120,11 +143,13 @@ public class RefactoredSubsetSum {
 			}
 		}
 		
-	    long[][] quads = new long[pairs.length*pairs.length][4];
-		int quadCursor = 0;
+		
+	    long[][] quads = new long[pairs.length*(pairs.length-1)/2][4];
+	    
+	    int quadCursor = 0;
 		   
 		for(int i = 0; i < pairCursor; i++){
-		    for(int j = i + 1; j < pairs.length; j++){
+			for(int j = i + 1; j < pairCursor; j++){
 		        //Only use pairs of pairs not containing common elements.
 		        if(pairs[i][0] != pairs[j][0] && pairs[i][0] != pairs[j][1] && 
 		            pairs[i][1] != pairs[j][0] && pairs[i][1] != pairs[j][1])
@@ -146,7 +171,7 @@ public class RefactoredSubsetSum {
 	               qD = j;
 	           if(qA != -1 && qB != -1 && qC != -1 && qD != -1)  break;
 	       } 
-	       if(qA == -1 || qB == -1 || qC == -1) continue;
+	      
 	       // Swap elements into the window
 	       
 	       long t = set[qA];
