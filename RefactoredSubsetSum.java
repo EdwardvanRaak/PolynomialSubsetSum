@@ -29,6 +29,24 @@ public class RefactoredSubsetSum {
 		subset = partialSubsetSum(set, sum);
 		if(subset.size() > 0) return subset;
 		
+		for(int i = 0; i < set.length; i++){
+			int max = i;
+			for(int j = i+1; j < set.length; j++){
+				if(set[j] > set[max])
+					max = j;
+			}
+			long t = set[i];
+			set[i] = set[max];
+			set[max] = t;
+		}
+		for(int i = 0; i < set.length/2; i+=2){
+			long t = set[i];
+			set[i] = set[set.length - 1 - i];
+			set[set.length - 1 - i] = t;
+		}
+		subset = partialSubsetSum(set, sum);
+		if(subset.size() > 0) return subset;
+		
 		// Descending absolute value
 		for(int i = 0; i < set.length; i++){
 			int max = i;
