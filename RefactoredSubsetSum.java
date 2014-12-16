@@ -45,7 +45,7 @@ public class RefactoredSubsetSum {
 			set[i] = set[set.length - 1 - i];
 			set[set.length - 1 - i] = t;
 		}
-		subset = partialSubsetSum(set, sum, weighted, weight);
+		subset = partialSubsetSum(set, sum, !weighted, weight);
 		if(subset.size() > 0) return subset;
 		
 		for(int i = 0; i < set.length; i++){
@@ -63,7 +63,7 @@ public class RefactoredSubsetSum {
 			set[i] = set[set.length - 1 - i];
 			set[set.length - 1 - i] = t;
 		}
-		subset = partialSubsetSum(set, sum, weighted, weight);
+		subset = partialSubsetSum(set, sum, !weighted, weight);
 		if(subset.size() > 0) return subset;
 		
 		// Descending absolute value
@@ -130,14 +130,13 @@ public class RefactoredSubsetSum {
 		LinkedList<Long> subset = new LinkedList<Long>();
 	
 		long setSum = 0;
-
 		// in-place window swap?
 		// desc, asc, stripe desc, stripe asc		
 		
 		/* Finding pairs */
 		long[][] pairs = new long[set.length*(set.length-1)/2][2];
 		int pairCursor = 0;
-		 
+		
 		// Check for the sum among prefix subset of elements of the set.
 		for(int i = 0; i < set.length; i++){
 			// Populate subset where necessary and return it if found.
@@ -161,9 +160,10 @@ public class RefactoredSubsetSum {
 			if(weighted && set[i] == weight) continue;
 			if(setSum-set[i] == sum){
 				for(int j = 0; j < set.length; j++){
-					if(j != i) subset.add(set[j]);
+					if(j != i && !(weighted && set[j]==weight)) subset.add(set[j]);
 				}
-				return subset;
+				if(subset.size() > 0)
+					return subset;
 			}
 		}
 		
