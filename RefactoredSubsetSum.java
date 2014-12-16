@@ -6,9 +6,28 @@ public class RefactoredSubsetSum {
 		return subsetSum(set, sum).size() > 0;
 	}
 	
-	public static LinkedList<Long> subsetSum(long[] set, long sum){
+	public static LinkedList<Long> subsetSum(long[] uSet, long sum){
 		
 		LinkedList<Long> subset = null;
+		
+		long weight = -1 * sum;
+		boolean weighted = false;
+		for(int i = 0; i < uSet.length; i++){
+			if(uSet[i] == weight){
+				weighted = true;
+				break;
+			}
+		}
+		long[] set = null;
+		if(!weighted){
+			set = new long[uSet.length+1];
+			set[0] =  weight;
+			for(int i = 0; i < uSet.length; i++){
+				set[i+1] = uSet[i];
+			}
+		} else{
+			set = uSet;
+		}
 		
 		// Broken ordering
 		for(int i = 0; i < set.length; i++){
@@ -26,7 +45,7 @@ public class RefactoredSubsetSum {
 			set[i] = set[set.length - 1 - i];
 			set[set.length - 1 - i] = t;
 		}
-		subset = partialSubsetSum(set, sum);
+		subset = partialSubsetSum(set, sum, weighted, weight);
 		if(subset.size() > 0) return subset;
 		
 		for(int i = 0; i < set.length; i++){
@@ -44,7 +63,7 @@ public class RefactoredSubsetSum {
 			set[i] = set[set.length - 1 - i];
 			set[set.length - 1 - i] = t;
 		}
-		subset = partialSubsetSum(set, sum);
+		subset = partialSubsetSum(set, sum, weighted, weight);
 		if(subset.size() > 0) return subset;
 		
 		// Descending absolute value
@@ -58,7 +77,7 @@ public class RefactoredSubsetSum {
 			set[i] = set[max];
 			set[max] = t;
 		}
-		subset = partialSubsetSum(set, sum);
+		subset = partialSubsetSum(set, sum, !weighted, weight);
 		if(subset.size() > 0) return subset;
 		
 		// Descending scalar value
@@ -72,7 +91,7 @@ public class RefactoredSubsetSum {
 			set[i] = set[max];
 			set[max] = t;
 		}
-		subset = partialSubsetSum(set, sum);
+		subset = partialSubsetSum(set, sum, !weighted, weight);
 		if(subset.size() > 0) return subset;
 		
 		// Ascending absolute value
@@ -86,7 +105,7 @@ public class RefactoredSubsetSum {
 			set[i] = set[min];
 			set[min] = t;
 		}
-		subset = partialSubsetSum(set, sum);
+		subset = partialSubsetSum(set, sum, !weighted, weight);
 		if(subset.size() > 0) return subset;
 		
 		// Ascending absolute signed value
@@ -100,13 +119,14 @@ public class RefactoredSubsetSum {
 			set[i] = set[min];
 			set[min] = t;
 		}
-		subset = partialSubsetSum(set, sum);
+		subset = partialSubsetSum(set, sum, !weighted, weight);
 		if(subset.size() > 0) return subset;
 		
 		return subset;
 	}
 	
-	public static LinkedList<Long> partialSubsetSum(long[] set, long sum){
+	public static LinkedList<Long> partialSubsetSum(long[] set, long sum, boolean weighted,
+			long weight){
 		LinkedList<Long> subset = new LinkedList<Long>();
 	
 		long setSum = 0;
@@ -121,6 +141,7 @@ public class RefactoredSubsetSum {
 		// Check for the sum among prefix subset of elements of the set.
 		for(int i = 0; i < set.length; i++){
 			// Populate subset where necessary and return it if found.
+			if(weighted && set[i] == weight) continue;
 			if(set[i] == sum){
 				subset.add(set[i]);
 				return subset;
@@ -137,6 +158,7 @@ public class RefactoredSubsetSum {
 		// Check for the case that the subset summing to the sought value 
 		// has length |set| - 1.
 		for(int i = 0; i < set.length; i++){
+			if(weighted && set[i] == weight) continue;
 			if(setSum-set[i] == sum){
 				for(int j = 0; j < set.length; j++){
 					if(j != i) subset.add(set[j]);
@@ -152,6 +174,9 @@ public class RefactoredSubsetSum {
 					pairs[pairCursor++] = new long[]{ set[i], 
 						 set[j] };
 				 
+				if(weighted && (set[i] == weight || set[j] == weight))
+					continue;
+				
 				if(set[i] + set[j] == sum){
 					
 					subset.add(set[i]);
@@ -207,13 +232,13 @@ public class RefactoredSubsetSum {
 		   for( int wShifts = 0; wShifts < 2; wShifts++){
 			   
 			   for(int n = 3; n < set.length - 1; n++){
-				   balance(subset, set, sum, n, 1, 1);
+				   balance(subset, set, sum, n, 1, 1, weighted, weight);
 				   if(subset.size() > 0) return subset;
-				   balance(subset, set, sum, n, 0, 0);
+				   balance(subset, set, sum, n, 0, 0, weighted, weight);
 				   if(subset.size() > 0) return subset;
-				   balance(subset, set, sum, n, 1, 0);
+				   balance(subset, set, sum, n, 1, 0, weighted, weight);
 				   if(subset.size() > 0) return subset;
-				   balance(subset, set, sum, n, 0, 1);
+				   balance(subset, set, sum, n, 0, 1, weighted, weight);
 				   if(subset.size() > 0) return subset;
 			   }
 			   
@@ -227,12 +252,12 @@ public class RefactoredSubsetSum {
 	}
 	
 	public static boolean balance(LinkedList<Long> workingSubset,
-			long[] set, long c, int t, int v_r, int v_s){
+			long[] set, long c, int t, int v_r, int v_s, boolean weighted, long weight){
 		
-		if(!test(workingSubset, set, c, t, 0, 0, v_r, v_s) &&
-				!test(workingSubset, set, c, t, 1, 1, v_r, v_s) &&
-				!test(workingSubset, set, c, t, 1, 0, v_r, v_s) && 
-				!test(workingSubset, set, c, t, 0, 1, v_r, v_s)){
+		if(!test(workingSubset, set, c, t, 0, 0, v_r, v_s, weighted, weight) &&
+				!test(workingSubset, set, c, t, 1, 1, v_r, v_s, weighted, weight) &&
+				!test(workingSubset, set, c, t, 1, 0, v_r, v_s, weighted, weight) && 
+				!test(workingSubset, set, c, t, 0, 1, v_r, v_s, weighted, weight)){
 			return false;
 		}
 		
@@ -240,26 +265,31 @@ public class RefactoredSubsetSum {
 	}
 	
 	public static boolean test(LinkedList<Long> workingSubset,
-			long[] set, long c, int t, int t_1, int t_2, int v_r, int v_s){
+			long[] set, long c, int t, int t_1, int t_2, int v_r, int v_s, boolean weighted,
+			long weight){
 		LinkedList<Integer> valid = new LinkedList<Integer>();
 		
 		long d1 = set[1]*t - c;
 		long d2 = c - set[0] * t;
 		
 		if(t_1 == 1){
+			if(weighted && set[0] == weight) return false;
 			valid.add(0);
 			d1 += set[0] - set[1];
 		}
 		if(t_2 == 1){
+			if(weighted && set[1] == weight) return false;
 			valid.add(1);
 			d2 += set[0] - set[1];
 		}
 		if(v_r == 1){
+			if(weighted && set[2] == weight) return false;
 			valid.add(2);
 			d1 += set[2] - set[1];
 			d2 -= set[2] - set[0];
 		}
 		if(v_s == 1){
+			if(weighted && set[3] == weight) return false;
 			valid.add(3);
 			d1 += set[3] - set[1];
 			d2 -= set[3] - set[0];
@@ -294,7 +324,7 @@ public class RefactoredSubsetSum {
 		
 		//{ -1, 0, + 1 } if a < b, a = b, or a > b
 		for(int i = 4; i < set.length; i++){
-			
+			if(set[i] == weight && weighted) continue;
 			long dir1 = (set[1] - set[i])*d2*sgn_d1;
 			long dir2 = (set[i] - set[0])*d1*sgn_d2;
 			long dir3 = Math.abs(dir1 - dir2);
