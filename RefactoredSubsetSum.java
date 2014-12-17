@@ -148,7 +148,7 @@ public class RefactoredSubsetSum {
 			setSum += set[i];
 			if(sum == setSum){
 				for(int j = 0; j <= i; j++){
-					if(!weighted && set[j] == weight)
+					if(!(weighted && set[j] == weight))
 						subset.add(set[j]);
 				}
 				return subset;
@@ -230,7 +230,6 @@ public class RefactoredSubsetSum {
 	       set[qD] = set[3];
 	       set[3] = t; 
 		   for( int wShifts = 0; wShifts < 2; wShifts++){
-			   
 			   for(int n = 3; n < set.length - 1; n++){
 				   balance(subset, set, sum, n, 1, 1, weighted, weight);
 				   if(subset.size() > 0) return subset;
