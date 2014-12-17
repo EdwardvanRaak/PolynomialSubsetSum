@@ -43,7 +43,6 @@ public class RefactoredSubsetSum {
 		for(int q = 0; q < set.length; q++){
 			subset = partialSubsetSum(set,sum,!weighted, weight);
 			if(subset.size() > 0) return subset;
-			System.out.println((q+1)+".");
 			shiftSet(set);
 		}
 		
