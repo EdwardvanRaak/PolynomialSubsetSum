@@ -29,98 +29,23 @@ public class RefactoredSubsetSum {
 			set = uSet;
 		}
 		
-		// Broken ordering
-		for(int i = 0; i < set.length; i++){
-			int min = i;
-			for(int j = i+1; j < set.length; j++){
-				if(set[j] < set[min])
-					min = j;
-			}
-			long t = set[i];
-			set[i] = set[min];
-			set[min] = t;
-		}
-		for(int i = 0; i < set.length/2; i+=2){
-			long t = set[i];
-			set[i] = set[set.length - 1 - i];
-			set[set.length - 1 - i] = t;
-		}
-		subset = partialSubsetSum(set, sum, !weighted, weight);
-		if(subset.size() > 0) return subset;
-		
 		for(int i = 0; i < set.length; i++){
 			int max = i;
 			for(int j = i+1; j < set.length; j++){
-				if(set[j] > set[max])
+				if(Math.abs(set[j]) < Math.abs(set[max]))
 					max = j;
 			}
 			long t = set[i];
 			set[i] = set[max];
 			set[max] = t;
 		}
-		for(int i = 0; i < set.length/2; i+=2){
-			long t = set[i];
-			set[i] = set[set.length - 1 - i];
-			set[set.length - 1 - i] = t;
-		}
-		subset = partialSubsetSum(set, sum, !weighted, weight);
-		if(subset.size() > 0) return subset;
 		
-		// Descending absolute value
-		for(int i = 0; i < set.length; i++){
-			int max = i;
-			for(int j = i+1; j < set.length; j++){
-				if(Math.abs(set[j]) > Math.abs(set[max]))
-					max = j;
-			}
-			long t = set[i];
-			set[i] = set[max];
-			set[max] = t;
+		for(int q = 0; q < set.length; q++){
+			subset = partialSubsetSum(set,sum,!weighted, weight);
+			if(subset.size() > 0) return subset;
+			System.out.println((q+1)+".");
+			shiftSet(set);
 		}
-		subset = partialSubsetSum(set, sum, !weighted, weight);
-		if(subset.size() > 0) return subset;
-		
-		// Descending scalar value
-		for(int i = 0; i < set.length; i++){
-			int max = i;
-			for(int j = i+1; j < set.length; j++){
-				if(set[j] > set[max])
-					max = j;
-			}
-			long t = set[i];
-			set[i] = set[max];
-			set[max] = t;
-		}
-		subset = partialSubsetSum(set, sum, !weighted, weight);
-		if(subset.size() > 0) return subset;
-		
-		// Ascending absolute value
-		for(int i = 0; i < set.length; i++){
-			int min = i;
-			for(int j = i+1; j < set.length; j++){
-				if(Math.abs(set[j]) < Math.abs(set[min]))
-					min = j;
-			}
-			long t = set[i];
-			set[i] = set[min];
-			set[min] = t;
-		}
-		subset = partialSubsetSum(set, sum, !weighted, weight);
-		if(subset.size() > 0) return subset;
-		
-		// Ascending absolute signed value
-		for(int i = 0; i < set.length; i++){
-			int min = i;
-			for(int j = i+1; j < set.length; j++){
-				if(set[j] < set[min])
-					min = j;
-			}
-			long t = set[i];
-			set[i] = set[min];
-			set[min] = t;
-		}
-		subset = partialSubsetSum(set, sum, !weighted, weight);
-		if(subset.size() > 0) return subset;
 		
 		return subset;
 	}
@@ -186,9 +111,7 @@ public class RefactoredSubsetSum {
 			}
 		}
 		
-		
-	    long[][] quads = new long[pairs.length*(pairs.length-1)/2][4];
-	    
+	    long[][] quads = new long[pairCursor*(pairCursor-1)/2][4];
 	    int quadCursor = 0;
 		   
 		for(int i = 0; i < pairCursor; i++){
@@ -202,6 +125,7 @@ public class RefactoredSubsetSum {
 		}
 		
 		for(int i = 0; i < quadCursor; i++){
+			
 			int qA = -1, qB = -1, qC = -1, qD = -1;
 			for(int j = 0; j < set.length; j++){
 	           if(set[j] == quads[i][0])
@@ -313,6 +237,7 @@ public class RefactoredSubsetSum {
 		long s1 = 0;
 		long s2 = 0;
 		long d1d2 = d1*d2;
+	
 		int sgn = d1d2 < 0 ? -1 : 1;
 		int sgn_d1 = d1 < 0 ? -1 : 1;
 		int sgn_d2 = d2 < 0 ? -1 : 1;
@@ -328,7 +253,7 @@ public class RefactoredSubsetSum {
 			long dir2 = (set[i] - set[0])*d1*sgn_d2;
 			long dir3 = Math.abs(dir1 - dir2);
 			//if(dir1 < 0 || dir2 >= d1d2 || dir2 < 0)
-				//continue;
+			//	continue;
 			if(dir3 < d1d2 && dir3 > 0){
 				valid.add(i);
 				s1 += dir1;
@@ -343,5 +268,12 @@ public class RefactoredSubsetSum {
 		}
 		
 		return false;
+	}
+	
+	public static void shiftSet(long[] set){
+		long t = set[0];
+		for(int i = 1; i < set.length; i++)
+			set[i-1] = set[i];
+		set[set.length-1] = t;
 	}
 }
