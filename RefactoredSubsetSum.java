@@ -128,7 +128,7 @@ public class RefactoredSubsetSum {
 	public static LinkedList<Long> partialSubsetSum(long[] set, long sum, boolean weighted,
 			long weight){
 		LinkedList<Long> subset = new LinkedList<Long>();
-	
+		
 		long setSum = 0;
 		// in-place window swap?
 		// desc, asc, stripe desc, stripe asc		
@@ -148,7 +148,8 @@ public class RefactoredSubsetSum {
 			setSum += set[i];
 			if(sum == setSum){
 				for(int j = 0; j <= i; j++){
-					subset.add(set[j]);
+					if(!weighted && set[j] == weight)
+						subset.add(set[j]);
 				}
 				return subset;
 			}
@@ -178,7 +179,6 @@ public class RefactoredSubsetSum {
 					continue;
 				
 				if(set[i] + set[j] == sum){
-					
 					subset.add(set[i]);
 					subset.add(set[j]);
 					return subset;
