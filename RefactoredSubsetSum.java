@@ -32,7 +32,7 @@ public class RefactoredSubsetSum {
 		for(int i = 0; i < set.length; i++){
 			int max = i;
 			for(int j = i+1; j < set.length; j++){
-				if(Math.abs(set[j]) < Math.abs(set[max]))
+				if(set[j] > set[max])
 					max = j;
 			}
 			long t = set[i];
@@ -43,7 +43,8 @@ public class RefactoredSubsetSum {
 		for(int q = 0; q < set.length; q++){
 			subset = partialSubsetSum(set,sum,!weighted, weight);
 			if(subset.size() > 0) return subset;
-			shiftSet(set);
+			//shiftSet(set);
+			//System.out.println((q+1)+".");
 		}
 		
 		return subset;
