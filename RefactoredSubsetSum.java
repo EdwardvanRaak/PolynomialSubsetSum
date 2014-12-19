@@ -44,7 +44,7 @@ public class RefactoredSubsetSum {
 			subset = partialSubsetSum(set,sum,!weighted, weight);
 			if(subset.size() > 0) return subset;
 			//shiftSet(set);
-			System.out.println((q+1)+". ");
+			//System.out.println((q+1)+". ");
 		}
 		
 		for(int i = 0; i < set.length; i++){
@@ -61,7 +61,7 @@ public class RefactoredSubsetSum {
 		for(int q = 0; q < set.length; q++){
 			subset = partialSubsetSum(set,sum,!weighted, weight);
 			if(subset.size() > 0) return subset;
-			shiftSet(set);
+			//shiftSet(set);
 		}
 		
 		return subset;
