@@ -3,7 +3,7 @@ Subset Sum Problem, Strongly Polynomial Algorithm
 
 In this repo you'll find the fruits of an on-going effort to implement a polynomial-time algorithm to solve the subset sum problem.  
 
-Note: this repo may eventually contain multiple algorithms.  This readme currently applies only to the current method being explored.
+Note: this repo may eventually contain multiple algorithms.  This readme currently applies only to the current method being explored.  Additionally, I tend to tinker with the implementation of the method to see if I can't alter it in some way to in any way enhance performance: the pseudocode given in method.pdf may not always align precisely with the current form of the algorithm.
 
 About the current method in iquestion:
 The current big-O runtime is O(n^7).
