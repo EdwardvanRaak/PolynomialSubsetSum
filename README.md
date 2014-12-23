@@ -3,9 +3,9 @@ Subset Sum Problem, Strongly Polynomial Algorithm
 
 In this repo you'll find the fruits of an on-going effort to implement a polynomial-time algorithm to solve the subset sum problem.  
 
-Note: this repo may eventually contain multiple algorithms.  This readme applies to the current primary method given.
+Note: this repo may eventually contain multiple algorithms.  This readme currently applies only to the current method being explored.
 
-About this project:
+About the current method in iquestion:
 The current big-O runtime is O(n^7).
 
 RefactoredSubsetSum.java is the (somewhat) optimized implementation of the algorithm developed as the algorithm was analyzed for justification.  This uses the closed forms found in method.pdf.
